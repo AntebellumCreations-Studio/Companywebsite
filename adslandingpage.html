@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AD | Digital Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        html, body { height: 100%; margin: 0; }
+        .split-container { display: flex; height: 100vh; }
+        .split-section {
+            flex: 1; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            transition: all 0.5s ease; position: relative; overflow: hidden;
+        }
+        .split-section:hover { flex: 1.5; }
+        .split-section::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.3); z-index: 1; transition: all 0.3s ease;
+        }
+        .split-section:hover::before { background: rgba(0,0,0,0.1); }
+        .section-content { z-index: 2; text-align: center; padding: 2rem; max-width: 80%; }
+        .btn-explore {
+            margin-top: 2rem; opacity: 0; transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+        .split-section:hover .btn-explore { opacity: 1; transform: translateY(0); }
+        .divider { width: 1px; background: rgba(255,255,255,0.2); height: 100%; z-index: 3; }
+        @media (max-width: 768px) {
+            .split-container { flex-direction: column; }
+            .divider { width: 100%; height: 1px; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+    <div id="split-screen">
+        <div class="split-container">
+            <!-- AD Software Section -->
+            <div class="split-section bg-[url('https://res.cloudinary.com/dzvswbe1z/image/upload/v1747223348/Image_fx_11_uufujs.png')] bg-cover bg-center">
+                <div class="section-content">
+                    <h1 class="text-5xl md:text-7xl font-bold mb-4 tracking-tight">AD Software Dev</h1>
+                    <p class="text-xl opacity-0 transition-opacity duration-500">
+                        Innovative digital solutions for modern businesses
+                    </p>
+                    <a href="adsoftware.html" class="btn-explore bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-medium transition-all">
+                        Explore <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <!-- AD Studios Section -->
+            <div class="split-section bg-[url('https://res.cloudinary.com/dzvswbe1z/image/upload/v1747739515/image_fx__16_qahdxz.png')] bg-cover bg-center">
+                <div class="section-content">
+                    <h1 class="text-5xl md:text-7xl font-bold mb-4 tracking-tight">AD Studios</h1>
+                    <p class="text-xl opacity-0 transition-opacity duration-500">
+                        Creative digital experiences that captivate
+                    </p>
+                    <a href="adstudio.html" class="btn-explore bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full font-medium transition-all">
+                        Explore <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.split-section').forEach(section => {
+            section.addEventListener('mouseenter', function() {
+                this.querySelector('p').style.opacity = '1';
+            });
+            section.addEventListener('mouseleave', function() {
+                this.querySelector('p').style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>

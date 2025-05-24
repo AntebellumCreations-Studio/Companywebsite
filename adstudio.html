@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AD Studio | Game Development Specialists</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap');
+    
+    :root {
+      --primary: #FF6B6B;
+      --secondary: #4ECDC4;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --deep-purple: #1F01B9;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      color: var(--light);
+      background-color: var(--dark);
+      overflow-x: hidden;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+    }
+    
+    /* Parallax Sections */
+    .parallax {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .parallax-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      will-change: transform;
+      z-index: -1;
+    }
+    
+    .parallax-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    /* Floating Game Cards */
+    .project-card {
+      transition: all 0.5s ease;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+    }
+    
+    .project-card:hover {
+      transform: translateY(-20px) rotateY(10deg);
+      box-shadow: 0 30px 50px rgba(31, 1, 185, 0.3);
+    }
+    
+    /* Glowing Text */
+    .glow-text {
+      text-shadow: 0 0 10px rgba(31, 1, 185, 0.8);
+    }
+    
+    /* Particle Background */
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    
+    /* Neon Button */
+    .neon-btn {
+      position: relative;
+      display: inline-block;
+      padding: 15px 30px;
+      color: #fff;
+      letter-spacing: 4px;
+      text-decoration: none;
+      font-size: 18px;
+      overflow: hidden;
+      transition: 0.2s;
+      border-radius: 5px;
+      background: rgba(31, 1, 185, 0.2);
+      border: 1px solid var(--deep-purple);
+    }
+    
+    .neon-btn:hover {
+      color: #fff;
+      background: var(--deep-purple);
+      box-shadow: 0 0 10px var(--deep-purple), 0 0 40px var(--deep-purple), 0 0 80px var(--deep-purple);
+      transition-delay: 0.1s;
+    }
+    
+    /* Floating Animation */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    /* Scroll Indicator */
+    .scroll-down {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 30px;
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+      40% { transform: translateY(-30px) translateX(-50%); }
+      60% { transform: translateY(-15px) translateX(-50%); }
+    }
+    
+    /* Team Card Hover Effect */
+    .team-card {
+      transition: all 0.3s ease;
+      transform: perspective(1000px) rotateX(0deg);
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+    }
+    
+    .team-card:hover {
+      transform: perspective(1000px) rotateX(10deg);
+      box-shadow: 0 20px 50px rgba(31, 1, 185, 0.3);
+    }
+    
+    /* Video Container */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 */
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* Quote Section */
+    .quote-card {
+      background: linear-gradient(135deg, #1F01B9, #5E43FF);
+      transform: perspective(1000px);
+      transition: all 0.5s ease;
+    }
+    
+    .quote-card:hover {
+      transform: perspective(1000px) rotateX(5deg);
+      box-shadow: 0 30px 50px rgba(31, 1, 185, 0.4);
+    }
+    
+    /* Role Tags */
+    .role-tag {
+      background-color: rgba(31, 1, 185, 0.2);
+      border: 1px solid #1F01B9;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .parallax {
+        height: auto;
+        padding: 100px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="fixed w-full z-50 bg-slate-900 bg-opacity-80 backdrop-filter backdrop-blur-lg py-4 px-6 shadow-lg">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center">
+        <span class="text-3xl font-bold glow-text">AD</span>
+        <span class="text-3xl font-bold ml-1">STUDIO</span>
+      </div>
+      <div class="hidden md:flex space-x-8">
+        <a href="#home" class="text-white hover:text-[#1F01B9] transition-colors">Home</a>
+        <a href="#projects" class="text-white hover:text-[#1F01B9] transition-colors">Projects</a>
+        <a href="#video" class="text-white hover:text-[#1F01B9] transition-colors">Showcase</a>
+        <a href="#clients" class="text-white hover:text-[#1F01B9] transition-colors">For Clients</a>
+        <a href="#team" class="text-white hover:text-[#1F01B9] transition-colors">Team</a>
+        <a href="#contact" class="text-white hover:text-[#1F01B9] transition-colors">Contact</a>
+      </div>
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-white text-2xl">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-slate-800 mt-4 rounded-lg shadow-xl">
+      <div class="flex flex-col space-y-4 p-4">
+        <a href="#home" class="text-white hover:text-[#1F01B9] transition-colors">Home</a>
+        <a href="#projects" class="text-white hover:text-[#1F01B9] transition-colors">Projects</a>
+        <a href="#video" class="text-white hover:text-[#1F01B9] transition-colors">Showcase</a>
+        <a href="#clients" class="text-white hover:text-[#1F01B9] transition-colors">For Clients</a>
+        <a href="#team" class="text-white hover:text-[#1F01B9] transition-colors">Team</a>
+        <a href="#contact" class="text-white hover:text-[#1F01B9] transition-colors">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section with Parallax -->
+  <section id="home" class="parallax">
+    <div id="particles-js"></div>
+    <div class="parallax-bg" style="background-image: url('https://res.cloudinary.com/dzvswbe1z/image/upload/v1747312467/Alleyway_Sequence.1170_z8wlvi.jpg');"></div>
+    <div class="parallax-content">
+      <h1 class="text-5xl md:text-8xl font-bold mb-6 text-white">AD SOFTWARES GAME STUDIO</h1>
+      <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">Crafting a unique once in a life-time gaming experiences</p>
+      <a href="#projects" class="neon-btn">
+        VIEW OUR WORK <i class="fas fa-chevron-right ml-2"></i>
+      </a>
+    </div>
+    <div class="scroll-down">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="py-20 bg-gradient-to-b from-slate-900 to-slate-800">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl md:text-6xl font-bold text-center mb-4">OUR CURRENT PROJECTS</h2>
+      <p class="text-xl text-center mb-16 max-w-3xl mx-auto">Check out what we're working on right now</p>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="project-card rounded-xl overflow-hidden shadow-2xl hover:shadow-2xl transition-all duration-300">
+          <div class="h-96 bg-[url('https://res.cloudinary.com/dzvswbe1z/image/upload/v1747733792/Life_or_lead_poster_be3hwq.png')] bg-cover bg-center relative">
+            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+            <div class="absolute bottom-0 left-0 p-8 w-full">
+              <h3 class="text-3xl font-bold mb-2">Life or Lead: Death Games</h3>
+              <div class="flex items-center mb-4">
+                <div class="flex text-yellow-400">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="ml-2 text-sm">Project preview rating</span>
+              </div>
+              <p class="text-gray-300 mb-6">A multiplayer shooter death game set in phases in enclosed s</p>
+              <div class="flex flex-wrap gap-2 mb-4">
+                <span class="role-tag px-3 py-1 rounded-full text-sm">Unreal Engine 5</span>
+                <span class="role-tag px-3 py-1 rounded-full text-sm">RTX</span>
+                <span class="role-tag px-3 py-1 rounded-full text-sm">Co-op</span>
+                <span class="role-tag px-3 py-1 rounded-full text-sm">Multiplayer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-left">
+          <h3 class="text-3xl font-bold mb-6">Development Progress</h3>
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start">
+              <div class="bg-[#1F01B9] p-2 rounded-full mr-4">
+                <i class="fas fa-gamepad text-white"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Core Gameplay</h4>
+                <p class="text-gray-300">Animation based core mechanics and shooting gameplay</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <div class="bg-[#1F01B9] p-2 rounded-full mr-4">
+                <i class="fas fa-mountain text-white"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Environment Art</h4>
+                <p class="text-gray-300">Enclosed space and Indoor environment asset creation</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <div class="bg-[#1F01B9] p-2 rounded-full mr-4">
+                <i class="fas fa-users text-white"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Character Models</h4>
+                <p class="text-gray-300">Military Operator character design and animation</p>
+              </div>
+            </li>
+          </ul>
+          <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
+            <h4 class="font-bold text-xl mb-3">Development Progress</h4>
+            <div class="mb-3">
+              <div class="flex justify-between mb-1">
+                <span>Core Gameplay</span>
+                <span>5%</span>
+              </div>
+              <div class="w-full bg-slate-700 rounded-full h-2">
+                <div class="bg-[#1F01B9] h-2 rounded-full" style="width: 5%"></div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="flex justify-between mb-1">
+                <span>Environment Art</span>
+                <span>10%</span>
+              </div>
+              <div class="w-full bg-slate-700 rounded-full h-2">
+                <div class="bg-[#1F01B9] h-2 rounded-full" style="width: 10%"></div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="flex justify-between mb-1">
+                <span>Character Models</span>
+                <span>3%</span>
+              </div>
+              <div class="w-full bg-slate-700 rounded-full h-2">
+                <div class="bg-[#1F01B9] h-2 rounded-full" style="width: 3%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Second Project -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-20">
+        <div class="order-last lg:order-first text-left">
+          <h3 class="text-3xl font-bold mb-6">Overview</h3>
+          <p class="text-gray-300 mb-6">A High Dificulty Hack and Slash game with an entwinded story of misery and revenge set in fantasy Edo-era</p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="role-tag px-3 py-1 rounded-full text-sm">Unity</span>
+            <span class="role-tag px-3 py-1 rounded-full text-sm">Story mode</span>
+            <span class="role-tag px-3 py-1 rounded-full text-sm">Single Player</span>
+            <span class="role-tag px-3 py-1 rounded-full text-sm">VR Support</span>
+          </div>
+          <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
+            <h4 class="font-bold text-xl mb-3">Development Progress</h4>
+            <div class="mb-3">
+              <div class="flex justify-between mb-1">
+                <span>Core Gameplay</span>
+                <span>40%</span>
+              </div>
+              <div class="w-full bg-slate-700 rounded-full h-2">
+                <div class="bg-[#1F01B9] h-2 rounded-full" style="width: 40%"></div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="flex justify-between mb-1">
+                <span>Environment</span>
+                <span>30%</span>
+              </div>
+              <div class="w-full bg-slate-700 rounded-full h-2">
+                <div class="bg-[#1F01B9] h-2 rounded-full" style="width: 30%"></div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="flex justify-between mb-1">
+                <span>Story Intergration</span>
+                <span>20%</span>
+              </div>
+              <div class="w-full bg-slate-700 rounded-full h-2">
+                <div class="bg-[#1F01B9] h-2 rounded-full" style="width: 20%"></div>
+              </div>
+            </div>
+           <div class="mb-3">
+              <div class="flex justify-between mb-1">
+                <span>Character Asset Creation</span>
+                <span>20%</span>
+              </div>
+              <div class="w-full bg-slate-700 rounded-full h-2">
+                <div class="bg-[#1F01B9] h-2 rounded-full" style="width: 20%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+          
+        <div class="project-card rounded-xl overflow-hidden shadow-2xl hover:shadow-2xl transition-all duration-300 order-first lg:order-last">
+          <div class="h-96 bg-[url('https://res.cloudinary.com/dzvswbe1z/image/upload/v1747736191/Blood_Oath_Poster_risk7n.png')] bg-cover bg-center relative">
+            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+            <div class="absolute bottom-0 left-0 p-8 w-full">
+              <h3 class="text-3xl font-bold mb-2">BlOOD OATH</h3>
+              <div class="flex items-center mb-4">
+                <div class="flex text-yellow-400">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <span class="ml-2 text-sm">Playtester rating</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+   
+
+  <!-- Video Showcase Section -->
+  <section id="video" class="py-20 bg-gradient-to-b from-slate-800 to-slate-900">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl md:text-6xl font-bold text-center mb-4">GAME SHOWCASE</h2>
+      <p class="text-xl text-center mb-16 max-w-3xl mx-auto">Watch our latest gameplay trailer and development updates</p>
+      
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/NmVyaFBkNVU?si=aUDXPHqWtNFlyaGj" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+        <div class="bg-slate-800 p-8 rounded-xl">
+          <div class="text-4xl text-[#1F01B9] mb-4">
+            <i class="fas fa-video"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4">Game Trailers</h3>
+          <p class="text-gray-300">High-quality cinematic trailers that showcase your game's best features</p>
+        </div>
+        <div class="bg-slate-800 p-8 rounded-xl">
+          <div class="text-4xl text-[#1F01B9] mb-4">
+            <i class="fas fa-gamepad"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4">Gameplay Videos</h3>
+          <p class="text-gray-300">Authentic gameplay footage that highlights your game's mechanics</p>
+        </div>
+        <div class="bg-slate-800 p-8 rounded-xl">
+          <div class="text-4xl text-[#1F01B9] mb-4">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4">Dev Diaries</h3>
+          <p class="text-gray-300">Behind-the-scenes content that builds community engagement</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clients Section -->
+  <section id="clients" class="py-20 bg-gradient-to-b from-slate-900 to-black">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl md:text-6xl font-bold text-center mb-4">FOR CLIENTS</h2>
+      <p class="text-xl text-center mb-16 max-w-3xl mx-auto">We help bring your game ideas to life with our expertise</p>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h3 class="text-3xl font-bold mb-6">Custom Game Development</h3>
+          <p class="text-gray-300 mb-6">Whether you're an indie developer with a vision or a company looking to expand your game portfolio, we can help make your game a reality.</p>
+          
+          <div class="space-y-6">
+            <div class="flex items-start">
+              <div class="bg-[#1F01B9] p-3 rounded-full mr-4">
+                <i class="fas fa-check text-white"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Full Game Development</h4>
+                <p class="text-gray-300">From concept to launch, we handle all aspects of game development</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-[#1F01B9] p-3 rounded-full mr-4">
+                <i class="fas fa-check text-white"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Co-Development</h4>
+                <p class="text-gray-300">Augment your existing team with our specialized expertise</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-[#1F01B9] p-3 rounded-full mr-4">
+                <i class="fas fa-check text-white"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Prototyping</h4>
+                <p class="text-gray-300">Quickly validate your game concept with a playable prototype</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="quote-card rounded-xl p-8 text-white">
+          <div class="text-5xl mb-4">"</div>
+          <p class="text-xl italic mb-6">Working with AD Studio was a game-changer. Their creative input elevated our project beyond what we thought it could be.</p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-white rounded-full mr-4"></div>
+            <div>
+              <h4 class="font-bold">Sarah Johnson</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-20 bg-slate-800 rounded-xl p-8 md:p-12 border border-slate-700">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="md:col-span-2">
+            <h3 class="text-3xl font-bold mb-4">Get a Custom Quote</h3>
+            <p class="text-gray-300 mb-6">Tell us about your project and we'll provide a detailed proposal and estimate.</p>
+            <form class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label for="client-name" class="block text-sm font-medium mb-2">Name</label>
+                  <input type="text" id="client-name" class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1F01B9]">
+                </div>
+                <div>
+                  <label for="client-email" class="block text-sm font-medium mb-2">Email</label>
+                  <input type="email" id="client-email" class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1F01B9]">
+                </div>
+              </div>
+              <div>
+                <label for="project-type" class="block text-sm font-medium mb-2">Project Type</label>
+                <select id="project-type" class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1F01B9]">
+                  <option value="">Select project type</option>
+                  <option value="full">Full Game Development</option>
+                  <option value="co-dev">Co-Development</option>
+                  <option value="prototype">Prototype</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label for="project-details" class="block text-sm font-medium mb-2">Project Details</label>
+                <textarea id="project-details" rows="4" class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1F01B9]"></textarea>
+              </div>
+              <button type="submit" class="w-full bg-gradient-to-r from-[#1F01B9] to-[#5E43FF] text-white font-bold py-3 px-8 rounded-full hover:shadow-lg hover:shadow-[#1F01B9]/30 transition-all duration-300">
+                REQUEST QUOTE
+              </button>
+            </form>
+          </div>
+          <div class="bg-slate-900 p-8 rounded-lg flex flex-col justify-center">
+            <h4 class="font-bold text-xl mb-4">What to Include</h4>
+            <ul class="space-y-4">
+              <li class="flex items-start">
+                <div class="bg-[#1F01B9] p-1 rounded-full mr-3 mt-1">
+                  <i class="fas fa-check text-xs text-white"></i>
+                </div>
+                <span>Game genre and style</span>
+              </li>
+              <li class="flex items-start">
+                <div class="bg-[#1F01B9] p-1 rounded-full mr-3 mt-1">
+                  <i class="fas fa-check text-xs text-white"></i>
+                </div>
+                <span>Target platforms</span>
+              </li>
+              <li class="flex items-start">
+                <div class="bg-[#1F01B9] p-1 rounded-full mr-3 mt-1">
+                  <i class="fas fa-check text-xs text-white"></i>
+                </div>
+                <span>Project timeline</span>
+              </li>
+              <li class="flex items-start">
+                <div class="bg-[#1F01B9] p-1 rounded-full mr-3 mt-1">
+                  <i class="fas fa-check text-xs text-white"></i>
+                </div>
+                <span>Budget range</span>
+              </li>
+              <li class="flex items-start">
+                <div class="bg-[#1F01B9] p-1 rounded-full mr-3 mt-1">
+                  <i class="fas fa-check text-xs text-white"></i>
+                </div>
+                <span>Any existing assets or designs</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section id="team" class="py-20 bg-gradient-to-b from-black to-slate-900">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl md:text-6xl font-bold text-center mb-4">OUR FOUNDING TEAM</h2>
+      <p class="text-xl text-center mb-16 max-w-3xl mx-auto">The creative minds and technical experts behind AD Studio</p>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Team Member 1 -->
+        <div class="team-card rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
+          <div class="h-64 bg-[url('https://res.cloudinary.com/dzvswbe1z/image/upload/v1747739086/HannielPP_xrod85.jpg')] bg-cover bg-center relative">
+            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+            <div class="absolute bottom-0 left-0 p-6">
+              <h3 class="text-2xl font-bold">Hanniel O.</h3>
+              <p class="text-[#1F01B9]">Creative Lead</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-300 mb-4">3+ years game development experience.</p>
+            <div class="flex space-x-3">
+              <span class="role-tag px-2 py-1 rounded text-xs">C#</span>
+              <span class="role-tag px-2 py-1 rounded text-xs">Unity</span>
+              <span class="role-tag px-2 py-1 rounded text-xs">Level Creation</span>
+              <span class="role-tag px-2 py-1 rounded text-xs">Story/Cinematic</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Team Member 2 -->
+        <div class="team-card rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
+          <div class="h-64 bg-[url('https://res.cloudinary.com/dzvswbe1z/image/upload/v1747738233/Ney_PP_d98oax.jpg')] bg-cover bg-center relative">
+            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+            <div class="absolute bottom-0 left-0 p-6">
+              <h3 class="text-2xl font-bold">Ney A.</h3>
+              <p class="text-[#1F01B9]">Lead Programmer</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-300 mb-4">C# wizard specializing in gameplay systems and AI.</p>
+            <div class="flex space-x-3">
+              <span class="role-tag px-2 py-1 rounded text-xs">AI</span>
+              <span class="role-tag px-2 py-1 rounded text-xs">Gameplay</span>
+              <span class="role-tag px-2 py-1 rounded text-xs">Optimization</span>
+              <span class="role-tag px-2 py-1 rounded text-xs">Networking</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Team Member 3 -->
+        <div class="team-card rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
+          <div class="h-64 bg-[url('https://res.cloudinary.com/dzvswbe1z/image/upload/v1747738233/Jerry_PP_sw7kdi.jpg')] bg-cover bg-center relative">
+            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+            <div class="absolute bottom-0 left-0 p-6">
+              <h3 class="text-2xl font-bold">Jerry C.</h3>
+              <p class="text-[#1F01B9]">3D/Asste Creator</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-300 mb-4">Creates breathtaking visuals that define our games' unique style.</p>
+            <div class="flex space-x-3">
+              <span class="role-tag px-2 py-1 rounded text-xs">3D Art</span>
+              <span class="role-tag px-2 py-1 rounded text-xs">Lighting</span>
+              <span class="role-tag px-2 py-1 rounded text-xs">Materials</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Team Member 4 -->
+        <div class="team-card rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
+          <div class="h-64 bg-[url('https://res.cloudinary.com/dzvswbe1z/image/upload/v1747738234/Iyiola_PP_zys5ul.jpg')] bg-cover bg-center relative">
+            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+            <div class="absolute bottom-0 left-0 p-6">
+              <h3 class="text-2xl font-bold">Iyiola O.</h3>
+              <p class="text-[#1F01B9]">Programmer</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-300 mb-4">Crafts gameplay and fine tunning into the game world.</p>
+            <div class="flex space-x-3">
+              <span class="role-tag px-2 py-1 rounded text-xs">Cinematic</span>
+              <span class="role-tag px-2 py-1 rounded text-xs">Gameplay & Polishing</span>
+              <span class="role-tag px-2 py-1 rounded text-xs">Quest Design</span>
+            </div>
+          </div>
+        </div>
+$0
+      </div>
+      
+      <!-- Hiring Section -->
+      <div class="mt-20 bg-slate-800 rounded-xl p-8 md:p-12 border border-slate-700">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h3 class="text-3xl font-bold mb-4">Join Our Team</h3>
+            <p class="text-gray-300 mb-6">We're always looking for talented game developers to join our growing team. If you're passionate about game development and cutting-edge technology, we'd love to hear from you.</p>
+            <div class="space-y-4">
+              <div class="flex items-center">
+                <div class="bg-[#1F01B9] p-2 rounded-full mr-4">
+                  <i class="fas fa-check text-white"></i>
+                </div>
+                <span>Equity based pay and benefits</span>
+              </div>
+              <div class="flex items-center">
+                <div class="bg-[#1F01B9] p-2 rounded-full mr-4">
+                  <i class="fas fa-check text-white"></i>
+                </div>
+                <span>Flexible remote work options</span>
+              </div>
+              <div class="flex items-center">
+                <div class="bg-[#1F01B9] p-2 rounded-full mr-4">
+                  <i class="fas fa-check text-white"></i>
+                </div>
+                <span>Access to hardware and software</span>
+              </div>
+            </div>
+          </div>
+          <div class="bg-slate-900 p-8 rounded-lg">
+            <h4 class="font-bold text-xl mb-4">Current Openings</h4>
+            <div class="space-y-4">
+              <div class="border-b border-slate-700 pb-4">
+                <h5 class="font-bold">Game Programmer (Unreal)</h5>
+                <p class="text-sm text-gray-400">Contract • Remote</p>
+              </div>
+              <div class="border-b border-slate-700 pb-4">
+                <h5 class="font-bold">Technical Lead</h5>
+                <p class="text-sm text-gray-400">Contract • Remote</p>
+              </div>
+              <div class="border-b border-slate-700 pb-4">
+                <h5 class="font-bold"> Team Lead</h5>
+                <p class="text-sm text-gray-400">Contract • Remote</p>
+              </div>
+              <div class="border-b border-slate-700 pb-4">
+                <h5 class="font-bold">UI/UX Designer</h5>
+                <p class="text-sm text-gray-400">Contract • On-site</p>
+              </div>
+            </div>
+            <button class="mt-6 w-full bg-gradient-to-r from-[#1F01B9] to-[#5E43FF] text-white font-bold py-3 px-8 rounded-full hover:shadow-lg hover:shadow-[#1F01B9]/30 transition-all duration-300">
+              APPLY NOW
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section with Parallax -->
+  <section id="contact" class="parallax">
+    <div class="parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1551103782-8ab07afd45c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');"></div>
+    <div class="parallax-content">
+      <div class="max-w-4xl mx-auto bg-slate-900 bg-opacity-80 p-8 md:p-12 rounded-xl backdrop-filter backdrop-blur-sm">
+        <h2 class="text-4xl md:text-6xl font-bold mb-8 text-white">GET IN TOUCH</h2>
+        <p class="text-xl mb-8">Interested in our game development services?  Or want to join the team?.</p>
+        <form class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="name" class="block text-sm font-medium mb-2">Name</label>
+              <input type="text" id="name" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1F01B9]">
+            </div>
+            <div>
+              <label for="email" class="block text-sm font-medium mb-2">Email</label>
+              <input type="email" id="email" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1F01B9]">
+            </div>
+          </div>
+          <div>
+            <label for="subject" class="block text-sm font-medium mb-2">Subject</label>
+            <select id="subject" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1F01B9]">
+              <option value="">Select a topic</option>
+              <option value="collaboration">Project Collaboration</option>
+              <option value="hire">Hire Our Team</option>
+              <option value="investment">Investment Opportunity</option>
+              <option value="other">Other Inquiry</option>
+            </select>
+          </div>
+          <div>
+            <label for="message" class="block text-sm font-medium mb-2">Message</label>
+            <textarea id="message" rows="4" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1F01B9]"></textarea>
+          </div>
+          <button type="submit" class="w-full bg-gradient-to-r from-[#1F01B9] to-[#5E43FF] text-white font-bold py-3 px-8 rounded-full hover:shadow-lg hover:shadow-[#1F01B9]/30 transition-all duration-300">
+            SEND MESSAGE
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-black py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+  <!-- 1st column: Brand, Description, Socials -->
+  <div>
+    <div class="flex items-center mb-4">
+      <span class="text-3xl font-bold glow-text">AD</span>
+      <span class="text-3xl font-bold ml-1">STUDIO</span>
+    </div>
+    <p class="text-gray-400 mb-4">Game development specialists crafting next-gen experiences.</p>
+    <div class="flex space-x-4 mt-4">
+      <a href="https://twitter.com/ADSoftwaresltd" target="_blank" rel="noopener" aria-label="Twitter"
+         class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#1F01B9] hover:bg-[#5E43FF] text-white shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5E43FF]">
+        <i class="fab fa-twitter text-2xl"></i>
+      </a>
+      <a href="https://tiktok.com/@ad_sofware" target="_blank" rel="noopener" aria-label="TikTok"
+         class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#1F01B9] hover:bg-[#5E43FF] text-white shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5E43FF]">
+        <i class="fab fa-tiktok text-2xl"></i>
+      </a>
+      <a href="https://www.youtube.com/@ADSOFTWARESSTUDIO" target="_blank" rel="noopener" aria-label="YouTube"
+         class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#1F01B9] hover:bg-[#5E43FF] text-white shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5E43FF]">
+        <i class="fab fa-youtube text-2xl"></i>
+      </a>
+      <a href="https://linkedin.com/company/YOUR_COMPANY" target="_blank" rel="noopener" aria-label="LinkedIn"
+         class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#1F01B9] hover:bg-[#5E43FF] text-white shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5E43FF]">
+        <i class="fab fa-linkedin text-2xl"></i>
+      </a>
+      <a href="https://www.instagram.com/antebellumdigitalsoftwares/" target="_blank" rel="noopener" aria-label="Instagram"
+         class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#1F01B9] hover:bg-[#5E43FF] text-white shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5E43FF]">
+        <i class="fab fa-instagram text-2xl"></i>
+      </a>
+    </div>
+  </div>
+  <!-- 2nd column: OUR WORK -->
+  <div>
+    <h3 class="text-xl font-bold mb-4">OUR WORK</h3>
+    <ul class="space-y-2">
+      <li><a href="#projects" class="text-gray-400 hover:text-white transition-colors">Current Projects</a></li>
+      <li><a href="#video" class="text-gray-400 hover:text-white transition-colors">Game Showcase</a></li>
+      <li><a href="#clients" class="text-gray-400 hover:text-white transition-colors">For Clients</a></li>
+      <li><a href="#team" class="text-gray-400 hover:text-white transition-colors">Our Team</a></li>
+    </ul>
+  </div>
+  <!-- 3rd column: SERVICES -->
+  <div>
+    <h3 class="text-xl font-bold mb-4">SERVICES</h3>
+    <ul class="space-y-2">
+      <li><a href="#clients" class="text-gray-400 hover:text-white transition-colors">Game Development</a></li>
+      <li><a href="#clients" class="text-gray-400 hover:text-white transition-colors">Co-Development</a></li>
+      <li><a href="#clients" class="text-gray-400 hover:text-white transition-colors">Prototyping</a></li>
+      <li><a href="#team" class="text-gray-400 hover:text-white transition-colors">Careers</a></li>
+    </ul>
+  </div>
+  <!-- 4th column: CONTACT -->
+  <div>
+    <h3 class="text-xl font-bold mb-4">CONTACT</h3>
+    <ul class="space-y-2">
+      <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">Get In Touch</a></li>
+      <li><a href="#clients" class="text-gray-400 hover:text-white transition-colors">Request Quote</a></li>
+      <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Press Inquiries</a></li>
+      <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Support</a></li>
+    </ul>
+  </div>
+</div>
+
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    });
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+        
+        // Close mobile menu if open
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (!mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+        }
+      });
+    });
+
+    // Initialize particles.js if needed
+    // particlesJS.load('particles-js', 'particles.json', function() {
+    //   console.log('Particles.js loaded');
+    // });
+  </script>
+</body>
+</html>
