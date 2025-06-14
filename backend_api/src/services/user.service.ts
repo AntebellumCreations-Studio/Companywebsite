@@ -6,7 +6,7 @@ import UserDao from '../DB/dao/user.dao';
 import HttpException from '../exceptions/HttpException';
 import { IPagination } from '../interfaces/respons.interface';
 import { IUser } from '../interfaces/user.interface';
-import APIFeatures from '../utils/apiFeatures';
+import APIFeatures from '../utils/apifeatures';
 import { cloudinaryDeleteImage, cloudinaryUploadImage } from '../utils/cloudinary';
 
 @autoInjectable()
@@ -73,7 +73,7 @@ class UserService {
 
   async updateProfileImage(userId: string, file: Express.Multer.File) {
     const filePath = `${file.path}`;
-    const result = await cloudinaryUploadImage(filePath);
+    const result = await cloudinaryUploadImage(filePath,{ type: 'profile' });
     // update the user with the image url and public id
     let user = await this.userDao.getUserById(userId);
     if (!user) throw new HttpException(404, 'No user found');

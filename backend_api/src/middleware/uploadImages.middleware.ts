@@ -20,3 +20,9 @@ export const imageUpload = multer({
   fileFilter: multerFilter,
   limits: { fileSize: 1024 * 1024 * 250, files: 10 }, // 250MB and 10 file limit
 });
+
+export const postImageUpload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+  limits: { fileSize: 1024 * 1024 * 500, files: 10 }, // limit files to 5 and max size 500MB per file
+});

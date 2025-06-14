@@ -1,7 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-
 import HttpException from '../exceptions/HttpException';
-// import logger from '../log';
 import env from '../config/validateEnv';
 
 cloudinary.config({
@@ -10,47 +8,90 @@ cloudinary.config({
   api_secret: env.CLOUDINARY_API_SECRET,
 });
 
-//   try {
-//     const result = await cloudinary.uploader.upload(fileToUpload, {
-//       resource_type: 'auto',
-//       max_bytes: 1000000, // 1 MB
-//     });
+type UploadType = 'cover' | 'profile' | 'post' | 'default';
 
-//     return result;
-//   } catch (error) {
-//     throw new HttpException(500, 'Something went wrong while uploading the image');
-//   }
-// };
+interface UploadOptions {
+  type?: UploadType;
+}
 
-const cloudinaryDeleteImage = async (publicId: string) => {
+const cloudinaryUploadImage = async (
+  fileToUpload: string,
+  options: UploadOptions = { type: 'default' }
+) => {
   try {
-    const result = await cloudinary.uploader.destroy(publicId);
+    // Build dynamic folder path: e.g. 'cover/2025-06-14'
+    const today = new Date().toISOString().slice(0, 10);
+    const folderPath = `${options.type || 'default'}/${today}`;
 
-    return result;
-  } catch (error) {
-    throw new HttpException(500, 'Something went wrong while deleting the image');
-  }
-};
+    // Define transformations based on the image type
+    let transformation: object[];
 
-const cloudinaryUploadImage = async (fileToUpload: string) => {
-  try {
+    switch (options.type) {
+      case 'cover':
+        transformation = [
+          {
+            width: 1280,
+            height: 720,
+            crop: 'fill',
+            gravity: 'auto',
+          },
+        ];
+        break;
+
+      case 'profile':
+        transformation = [
+          {
+            width: 300,
+            height: 300,
+            crop: 'thumb',
+            gravity: 'face',
+            radius: 'max',
+          },
+        ];
+        break;
+
+      case 'post':
+        transformation = [
+          {
+            width: 800,
+            height: 600,
+            crop: 'fill',
+            gravity: 'auto',
+          },
+        ];
+        break;
+
+      default:
+        transformation = [
+          {
+            width: 500,
+            height: 500,
+            crop: 'thumb',
+            gravity: 'face',
+            radius: 'max',
+          },
+        ];
+    }
+
     const result = await cloudinary.uploader.upload(fileToUpload, {
+      folder: folderPath,
       quality: 80,
       resource_type: 'auto',
-      transformation: [
-        {
-          width: 500,
-          height: 500,
-          gravity: 'face',
-          crop: 'thumb', // thumb preserving its aspect ratio
-          radius: 'max', // rounded corners
-        },
-      ],
+      transformation,
     });
 
     return result;
   } catch (error) {
     throw new HttpException(500, 'Something went wrong while uploading the image');
+  }
+};
+
+const cloudinaryDeleteImage = async (publicId: string) => {
+  try {
+    const result = await cloudinary.uploader.destroy(publicId);
+    return result;
+  } catch (error) {
+    throw new HttpException(500, 'Something went wrong while deleting the image');
   }
 };
 

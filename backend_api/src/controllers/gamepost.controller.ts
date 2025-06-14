@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
-import { Multer } from 'multer';
 import { autoInjectable } from 'tsyringe';
 
 import HttpException from '../exceptions/HttpException';
@@ -10,9 +9,6 @@ import { userRoleVerification } from '../middleware/helper.middlewar';
 import { uploadMultipleFiles } from '../middleware/helper.middlewar';
 import { gamePostService } from '../services/gamepost.service';
 import { UserService } from '../services/user.service';
-import apiFeatures from '../utils/apiFeatures';
-// ✅ consistent casing
-import { cloudinaryDeleteImage, cloudinaryUploadImage } from '../utils/cloudinary';
 
 interface MulterFiles {
   [fieldname: string]: Express.Multer.File[];
@@ -40,9 +36,15 @@ class GamePostController {
     const imageFiles = files?.images || [];
 
     // Upload cover (single file or empty)
-    const uploadedCover = coverFiles.length > 0 ? await uploadMultipleFiles([coverFiles[0].path]) : [];
+    const uploadedCover = coverFiles.length > 0 ? await uploadMultipleFiles([coverFiles[0].path], 'cover') : [];
     // Upload images (multiple files or empty)
-    const uploadedImages = imageFiles?.length > 0 ? await uploadMultipleFiles(imageFiles.map(f => f.path)) : [];
+    const uploadedImages =
+      imageFiles?.length > 0
+        ? await uploadMultipleFiles(
+            imageFiles.map(f => f.path),
+            'post'
+          )
+        : [];
 
     // Prepare your post body
     const postBody = req.body as IGamePost;
@@ -64,12 +66,18 @@ class GamePostController {
 
     if (coverFiles.length > 0) {
       // Upload cover (single fileor empty)
-      const uploadedCover = coverFiles.length > 0 ? await uploadMultipleFiles([coverFiles[0].path]) : [];
+      const uploadedCover = coverFiles.length > 0 ? await uploadMultipleFiles([coverFiles[0].path], 'cover') : [];
 
       postBody.coverImage = uploadedCover[0] ? { url: uploadedCover[0].secure_url, publicId: uploadedCover[0].public_id } : undefined;
     }
-    if (imageFiles.length>0) {
-      const uploadedImages = imageFiles?.length > 0 ? await uploadMultipleFiles(imageFiles.map(f => f.path)) : [];
+    if (imageFiles.length > 0) {
+      const uploadedImages =
+        imageFiles?.length > 0
+          ? await uploadMultipleFiles(
+              imageFiles.map(f => f.path),
+              'post'
+            )
+          : [];
       postBody.images = uploadedImages.length > 0 ? uploadedImages.map(file => ({ url: file.secure_url, publicId: file.public_id })) : [];
     }
 

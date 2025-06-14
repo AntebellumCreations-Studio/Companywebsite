@@ -6,7 +6,7 @@ import HttpException from '../exceptions/HttpException';
 import { IGamePost } from '../interfaces/game-post.interface';
 import { IPagination } from '../interfaces/respons.interface';
 import { cloudinaryDeleteImage, cloudinaryUploadImage } from '../utils/cloudinary';
-import apiFeatures from '../utils/apiFeatures';
+import APIFeatures from '../utils/apifeatures';
 
 // ✅ consistent casing
 
