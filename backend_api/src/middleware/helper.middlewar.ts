@@ -1,3 +1,4 @@
+import { cloudinaryUploadImage,cloudinaryDeleteImage } from "../utils/cloudinary";
 const userRoleVerification = (userRole: string|null, level: number): boolean => {
 if (userRole){
       userRole = userRole.toLowerCase();
@@ -10,4 +11,10 @@ if (userRole){
 
   return false; // Default deny
 };
-export {userRoleVerification}
+const uploadMultipleFiles = async (files: string[]): Promise<{ secure_url: string; public_id: string }[]> => {
+  const uploadPromises = files.map(file => cloudinaryUploadImage(file));
+  const results = await Promise.all(uploadPromises);
+  return results;
+};
+export {userRoleVerification ,uploadMultipleFiles}
+

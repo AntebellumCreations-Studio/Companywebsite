@@ -1,6 +1,14 @@
 import { Schema, SchemaType, model } from 'mongoose';
 import { IGamePostDocument } from '../../interfaces/game-post.interface';
 
+const ImageObjectSchema = new Schema(
+  {
+    url: { type: String, required: true },
+    publicId: { type: String, default: null },
+  },
+  { _id: false } // Prevent Mongoose from adding _id to subdocs unnecessarily
+);
+
 const GamePostSchema = new Schema<IGamePostDocument>(
   {
     title: { type: String, required: true },
@@ -14,9 +22,9 @@ const GamePostSchema = new Schema<IGamePostDocument>(
       },
     ],
     gameTitle: { type: String, required: true },
-    genre: { type: String, required: true },
-    coverImage: { type: String,},
-    images: [{ type: String }],
+    genre:[ { type: String, required: true }],
+   coverImage: { type: ImageObjectSchema },
+    images: [ImageObjectSchema],
     trailerUrl: { type: String },
     releaseDate: { type: Schema.Types.Mixed},
   },

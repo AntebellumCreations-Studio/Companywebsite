@@ -64,7 +64,9 @@ class UserService {
 
   async deleteUser(userId: string) {
     let isUserExists = await this.userDao.getUserById(userId);
+   
     if (!isUserExists) throw new HttpException(404, 'No user found');
+     if (isUserExists .profilePicture.publicId) await cloudinaryDeleteImage(isUserExists.profilePicture.publicId);
     // TODO: delete all the posts and comments that belong to this user
     return await this.userDao.delete(userId);
   }

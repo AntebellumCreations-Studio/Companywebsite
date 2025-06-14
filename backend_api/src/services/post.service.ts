@@ -4,7 +4,9 @@ import { PostDao } from '../DB/dao/post.dao';
 import HttpException from '../exceptions/HttpException';
 import { IPost, IPostUpdate } from '../interfaces/post.interface';
 import { IPagination } from '../interfaces/respons.interface';
-import APIFeatures from '../utils/apiFeatures';
+import apiFeatures from '../utils/apiFeatures';
+
+// ✅ consistent casing
 
 @autoInjectable()
 class PostService {
@@ -31,8 +33,6 @@ class PostService {
     if (countPosts) paginate = apiFeatures.paginate(countPosts); // update the pagination object with the total documents
 
     let posts = await this.postDao.listPosts(query, paginate, sort, fields);
-    
-
 
     return { posts, paginate };
   };
