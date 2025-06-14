@@ -1,6 +1,8 @@
 export enum UserType {
   USER = 'USER',
   ADMIN = 'ADMIN',
+  MOD ='MOD',
+  STAFF = 'STAFF',
 }
 
 export interface IUser {
