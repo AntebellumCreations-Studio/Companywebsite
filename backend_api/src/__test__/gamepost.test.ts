@@ -56,8 +56,8 @@ describe('Game Post API Tests', () => {
         .field('gameTitle', testPost.gameTitle)
         .field('genre', JSON.stringify(testPost.genre))
         .field('releaseDate', testPost.releaseDate)
-        .attach('cover', path.join(__dirname, 'test-files/test-cover.jpg'))
-        .attach('images', path.join(__dirname, 'test-files/test-image1.jpg'));
+        .attach('cover', path.join(__dirname, 'test-files/test-cover.jpeg'))
+        .attach('images', path.join(__dirname, 'test-files/test-image1.jpeg'));
 
       expect(response.status).toBe(201);
       expect(response.body.data).toHaveProperty('_id');

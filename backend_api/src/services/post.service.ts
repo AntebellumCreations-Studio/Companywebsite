@@ -4,7 +4,7 @@ import { PostDao } from '../DB/dao/post.dao';
 import HttpException from '../exceptions/HttpException';
 import { IPost, IPostUpdate } from '../interfaces/post.interface';
 import { IPagination } from '../interfaces/respons.interface';
-import apiFeatures from '../utils/apiFeatures';
+import APIFeatures from '../utils/apifeatures';
 
 // ✅ consistent casing
 
