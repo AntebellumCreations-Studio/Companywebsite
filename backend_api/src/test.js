@@ -9,9 +9,9 @@ const baseUrl = 'http://localhost:6000/api/v1/';
 //  create  a new user
 async function createUser(route) {
   const testData = {
-    name: 'John Doe we',
-    email: 'Joh6n@gmail.com',
-    username: 'John Doe we',
+    name: 'John Doe we 12',
+    email: 'Joh6n@gmail12.com',
+    username: 'John Doe we 12',
     password: 'password123',
     confirmPassword: 'password123',
   };
@@ -24,19 +24,21 @@ async function createUser(route) {
   form.append('password', testData.password);
   form.append('confirmPassword', testData.confirmPassword);
 
-  console.log(form);
-  console.log(`${baseUrl}auth/${route}`);
 
-  try {
-    axios.post(`${baseUrl}auth/${route}`, form, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    console.log('Upload response:', response.data);
-  } catch (error) {
-    console.error('Upload failed:', error.response ? error.response.data : error.message);
-  }
+
+ try {
+  const response = await axios.post(`${baseUrl}auth/${route}`, form, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  console.log('Upload response:', response.data);
+} catch (error) {
+  console.error(
+    'Upload failed:',
+    error.response ? error.response.data : error.message
+  );
+}
 }
 
 createUser('signup');
