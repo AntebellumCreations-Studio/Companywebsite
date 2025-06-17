@@ -42,7 +42,8 @@ class App {
       this.app.use(morgan('dev'));
     }
     this.app.use(express.json());
-    this.app.use(express.urlencoded({extended:true}))
+    
+   
     // Enable other domains to access application
     this.app.use(cors());
     this.app.options('*', cors());

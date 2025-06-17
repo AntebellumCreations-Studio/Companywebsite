@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { autoInjectable } from 'tsyringe';
 import asyncHandler from 'express-async-handler';
+import { autoInjectable } from 'tsyringe';
 
 import { AuthServie } from '../services/auth.service';
 
@@ -11,6 +11,7 @@ export class AuthController {
   constructor(private readonly authService: AuthServie) {}
 
   public signup = asyncHandler(async (req: Request, res: Response) => {
+    console.log(req.body);
     let { user, token } = await this.authService.signup(req.body);
     const userData = { _id: user._id, email: user.email, username: user.username };
     res.status(201).json({ data: userData, token });
