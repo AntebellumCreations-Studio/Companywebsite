@@ -1,8 +1,8 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
-import { app } from '../app';
-import { gamePostService } from '../services/gamepost.service';
-import { UserService } from '../services/user.service';
+import { app } from '../../app';
+import { gamePostService } from '../../services/gamepost.service';
+import { UserService } from '../../services/user.service';
 import { container } from 'tsyringe';
 import path from 'path';
 

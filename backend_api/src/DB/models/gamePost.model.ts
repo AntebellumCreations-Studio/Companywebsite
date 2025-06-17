@@ -1,4 +1,4 @@
-import { Schema, SchemaType, model } from 'mongoose';
+import { Schema,  model } from 'mongoose';
 import { IGamePostDocument } from '../../interfaces/game-post.interface';
 
 const ImageObjectSchema = new Schema(

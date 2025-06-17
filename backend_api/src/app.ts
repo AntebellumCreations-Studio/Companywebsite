@@ -42,6 +42,7 @@ class App {
       this.app.use(morgan('dev'));
     }
     this.app.use(express.json());
+    this.app.use(express.urlencoded({extended:true}))
     // Enable other domains to access application
     this.app.use(cors());
     this.app.options('*', cors());
@@ -66,7 +67,10 @@ class App {
 
   public listen() {
     return this.app.listen(this.port, () => {
-      logger.info(`🚀 App listening in ${process.env.NODE_ENV} mode on the port ${this.port}`);
+      const baseUrl = this.env === 'production' ? `https://your-production-domain.com` : `http://localhost:${this.port}/api/v1`;
+
+      logger.info(`🚀 App listening in ${this.env} mode on ${baseUrl}`);
+      logger.info(`📚 app is running on ${baseUrl}`);
     });
   }
 }

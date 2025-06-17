@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { autoInjectable } from 'tsyringe';
 
 import { GamePostController } from '../controllers/gamepost.controller';
-import { PostController } from '../controllers/post.controller';
+
 import { authenticateUser } from '../middleware/auth.middleware';
 import { postImageUpload } from '../middleware/uploadImages.middleware';
 import {
@@ -14,8 +14,8 @@ import {
 import { gamePostFileValidator } from '../middleware/validation/gamepostfile.validator';
 
 @autoInjectable()
-class PostRoute {
-  public path = '/posts';
+class GamePostRoute {
+  public path = '/game';
   public router = Router({ mergeParams: true });
 
   constructor(private readonly gamePostController: GamePostController) {
@@ -44,4 +44,4 @@ class PostRoute {
   }
 }
 
-export { PostRoute };
+export { GamePostRoute };

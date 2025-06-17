@@ -1,11 +1,11 @@
 import { autoInjectable } from 'tsyringe';
 
 import { gamePostDao } from '../DB/dao/gamePost.doa';
-import GamePostModel from '../DB/models/gamePost.model';
+
 import HttpException from '../exceptions/HttpException';
 import { IGamePost } from '../interfaces/game-post.interface';
 import { IPagination } from '../interfaces/respons.interface';
-import { cloudinaryDeleteImage, cloudinaryUploadImage } from '../utils/cloudinary';
+import { cloudinaryDeleteImage } from '../utils/cloudinary';
 import APIFeatures from '../utils/apifeatures';
 
 // ✅ consistent casing
